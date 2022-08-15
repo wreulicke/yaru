@@ -65,7 +65,8 @@ func editFile(path string) error {
 }
 
 func getDefaultEditor() string {
-	if e := os.Getenv("EDITOR"); e == "" {
+	e := os.Getenv("EDITOR")
+	if e != "" {
 		return e
 	}
 	return "vim"
