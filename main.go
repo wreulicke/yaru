@@ -34,16 +34,19 @@ func mainInternal() error {
 	}
 
 	path := filepath.Join(dir, "yaru-"+time.Now().Format(currentDate)+".md")
-	file, err := os.Create(path)
-	if err != nil {
-		return err
-	}
-	_, err = file.WriteString(tepl)
-	if err != nil {
-		return err
+	_, err = os.Stat(path)
+	if os.IsNotExist(err) {
+		file, err := os.OpenFile(path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+		if err != nil {
+			return err
+		}
+		_, err = file.WriteString(tepl)
+		if err != nil {
+			return err
+		}
 	}
 
-	err = editFile(file.Name())
+	err = editFile(path)
 	if err != nil {
 		return err
 	}
