@@ -7,6 +7,8 @@ import (
 	"os/exec"
 	"path/filepath"
 	"time"
+
+	"github.com/atotto/clipboard"
 )
 
 //go:embed template.md
@@ -51,7 +53,12 @@ func mainInternal() error {
 		return err
 	}
 
-	return nil
+	bs, err := os.ReadFile(path)
+	if err != nil {
+		return err
+	}
+
+	return clipboard.WriteAll(string(bs))
 }
 
 func editFile(path string) error {
