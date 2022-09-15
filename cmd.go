@@ -28,7 +28,7 @@ func NewRootCommnad() *cobra.Command {
 			return root()
 		},
 	}
-	cmd.AddCommand(NewListCommand())
+	cmd.AddCommand(NewListCommand(), NewEditCommand())
 	return &cmd
 }
 
@@ -104,7 +104,7 @@ func NewListCommand() *cobra.Command {
 	cmd := cobra.Command{
 		Use:   "list",
 		Short: "list notes",
-		Long:  "list notest",
+		Long:  "list notes",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			return list()
 		},
@@ -130,4 +130,27 @@ func list() error {
 		fmt.Fprintln(w, e.Name())
 	}
 	return nil
+}
+
+func NewEditCommand() *cobra.Command {
+	cmd := cobra.Command{
+		Use:   "edit",
+		Short: "edit the note",
+		Long:  "edit the specified note",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return edit(args[0])
+		},
+	}
+	return &cmd
+}
+
+func edit(path string) error {
+	if filepath.IsAbs(path) {
+		return editFile(path)
+	}
+	dir, err := ensureYaruDir()
+	if err != nil {
+		return err
+	}
+	return editFile(filepath.Join(dir, path))
 }
